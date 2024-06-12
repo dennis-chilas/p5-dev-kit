@@ -9,6 +9,31 @@ const net = require('net');
 // get the folder path from shell parameter 
 //const projectFolder = process.argv[2];
 //const downloadFolder = path.join(projectFolder, 'download');
+
+const repoUrl = 'https://github.com/dennis-chilas/p5-project.git';
+const localPath = path.join(__dirname, 'project');
+
+// Funktion zum Klonen des Repositories, falls es noch nicht vorhanden ist
+const cloneRepo = async () => {
+    if (!fs.existsSync(localPath)) {
+        console.log('Klonen des Repositories...');
+        await simpleGit().clone(repoUrl, localPath);
+        console.log('Repository geklont.');
+    } else {
+        console.log('Repository ist bereits vorhanden.');
+    }
+};
+
+// Funktion zur Initialisierung und Aktualisierung der Submodule
+const updateSubmodules = async () => {
+    const git = simpleGit(localPath);
+    console.log('Submodule werden initialisiert und aktualisiert...');
+    await git.submoduleInit();
+    await git.submoduleUpdate(['--recursive']);
+    console.log('Submodule initialisiert und aktualisiert.');
+};
+
+
 const projectFolder = process.argv[2] || path.join(__dirname, 'project');
 const downloadFolder = path.join(projectFolder, 'download');
 
@@ -21,12 +46,18 @@ const git = simpleGit(projectFolder);
 
 
 const initializeGitRepo = async () => {
-    const isRepo = await git.checkIsRepo();
-    if (!isRepo) {
-        await git.init();
-        console.log(`Git-Repository im Ordner ${projectFolder} initialisiert.`);
-    }
-    else console.log("Repo schon da")
+    //const git = simpleGit(localPath);
+    console.log('Submodule werden initialisiert und aktualisiert...');
+    await git.submoduleInit();
+    await git.submoduleUpdate(['--recursive']);
+    console.log('Submodule initialisiert und aktualisiert.');
+
+    // const isRepo = await git.checkIsRepo();
+    // if (!isRepo) {
+    //     await git.init();
+    //     console.log(`Git-Repository im Ordner ${projectFolder} initialisiert.`);
+    // }
+    // else console.log("Repo schon da")
 };
 
 // attach .gitignore file to exclude download folder 
@@ -136,6 +167,7 @@ const findFreePort = (startPort, callback) => {
 
 const startPort = 3000; 
 findFreePort(startPort, async (port) => {
+    await cloneRepo();
     await initializeGitRepo();
     app.listen(port, () => {
         console.log(`Project is hosted http://localhost:${port} `);
