@@ -61,13 +61,29 @@ main().then(() => {
     // Middleware to parse JSON posts
     app.use(bodyParser.json({ limit: '100mb' }));
 
-    // Host static files from folder
-    app.use(express.static(path.resolve(projectFolder)));
+    // // Host static files from folder
+    // app.use(express.static(path.resolve(projectFolder)));
 
-    // Use index.html as standard
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(projectFolder, 'index.html'));
+    // // Use index.html as standard
+    // app.get('*', (req, res) => {
+    //     res.sendFile(path.resolve(projectFolder, 'index.html'));
+    // });
+
+    app.use((req, res, next) => {
+        if (req.path === '/') {
+            res.redirect('/project');
+        } else {
+            next();
+        }
     });
+        // Serve static files from the project folder
+        app.use('/project', express.static(path.resolve(projectFolder)));
+
+        // Serve index.html for the project folder
+        app.get('/project/*', (req, res) => {
+            res.sendFile(path.resolve(projectFolder, 'index.html'));
+        });
+       
 
     // Route to save canvas image
     app.post('/save-canvas', async (req, res) => {
@@ -114,6 +130,42 @@ main().then(() => {
             res.status(500).json({ success: false, message: 'Error during git operations' });
         }
     });
+
+
+       // Route to get a list of all commits
+       app.get('/commits', async (req, res) => {
+        try {
+            const log = await git.log(['--reflog']);
+            //--reflog
+            console.log(log);
+            res.json(log.all);
+        } catch (err) {
+            console.error('Error fetching commits:', err);
+            res.status(500).json({ success: false, message: 'Error fetching commits' });
+        }
+    });
+
+    // Route to checkout a specific commit
+    app.post('/checkout', async (req, res) => {
+        const commitHash = req.body.commitHash;
+        try {
+            await git.checkout(commitHash);
+            res.status(200).json({ success: true, message: `Checked out commit ${commitHash}` });
+        } catch (err) {
+            console.error('Error checking out commit:', err);
+            res.status(500).json({ success: false, message: 'Error checking out commit' });
+        }
+    });
+
+    app.use('/history', express.static(path.resolve(__dirname, 'history/')));
+
+    app.get('/history', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'history/index.html'));
+    });
+            // Serve index.html for the project folder
+    // app.get('/history/*', (req, res) => {
+    //     res.sendFile(path.resolve(projectFolder, 'index.html'));
+    // });
 
     // Function to create current timestamp for commit message
     const getCurrentTimestamp = () => new Date().toISOString();
