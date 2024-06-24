@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs-extra');
 const simpleGit = require('simple-git');
 const net = require('net');
+const sharp = require('sharp');
 
 const repoUrl = 'https://github.com/dennis-chilas/p5-project.git';
 const localPath = path.join(__dirname, 'project');
@@ -92,6 +93,7 @@ main().then(() => {
             const hash = req.body.hash;
             const gui = req.body.gui;
             const base64Data = imgData.replace(/^data:image\/png;base64,/, '');
+            const imgBuffer = Buffer.from(base64Data, 'base64');
 
             const variablesPath = path.join(projectFolder, 'variables.json');
             fs.writeJson(variablesPath, gui, { spaces: 2 }, (err) => {
@@ -122,6 +124,13 @@ main().then(() => {
                     res.status(500).json({ success: false, message: 'Error, cannot save image.' });
                 } else {
                     console.log(`Image saved successfully: ${filePath}`);
+                    const outputFileName = `${timeStamp}_${commitHash}_${hash}_s.png`;
+
+                    const outputFilePath = path.join(downloadFolder, outputFileName);
+             sharp(imgBuffer)
+                .resize({ width: 1000 })
+                .toFormat('webp')
+                .toFile(outputFilePath);
                     res.status(200).json({ success: true, message: 'Image saved successfully', filePath: filePath });
                 }
             });
