@@ -124,7 +124,7 @@ main().then(() => {
                     res.status(500).json({ success: false, message: 'Error, cannot save image.' });
                 } else {
                     console.log(`Image saved successfully: ${filePath}`);
-                    const outputFileName = `${timeStamp}_${commitHash}_${hash}_s.png`;
+                    const outputFileName = `${timeStamp}_${commitHash}_${hash}_s.webp`;
 
                     const outputFilePath = path.join(downloadFolder, outputFileName);
              sharp(imgBuffer)
