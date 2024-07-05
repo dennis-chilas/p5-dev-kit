@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const { cloneRepo, updateSubmodules, git } = require('./gitOperations');
+const { cloneRepo, updateSubmodules, getGitInstance } = require('./gitOperations');
 const { startWebSocketServer } = require('./fileWatcher');
 const portfinder = require('portfinder');
 const fs = require('fs-extra'); // Sicherstellen, dass fs-extra importiert ist
