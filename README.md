@@ -25,8 +25,22 @@ npm install
 
 ## starting
 The p5.js template [see repo here](https://github.com/dennis-chilas/p5-project) loaded as a submodule automatically to project/ - in this folder is the source code and a download folder. All screenshots/image exports are saved in project/download/
-
+The script searches for a free port for the webserver and for websockets (for browser auto refresh...) and logs on the command line.
 
 ```
 node server.js
+
+----------
+Cloning the repository...
+Repository cloned.
+Initializing submodules...
+Submodules initialized.
+Updating submodules...
+Submodules updated.
+Project is hosted on http://localhost:3007
+WebSocket server is running on ws://localhost:8000
 ```
+
+The visual view is under the project url /history... in my case http://localhost:3007/history
+
+[![example](https://upload.dennis-chilas.de/p5devkit.jpg)](https://upload.dennis-chilas.de/p5devkit.mp4)
