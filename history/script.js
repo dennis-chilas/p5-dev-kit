@@ -250,7 +250,7 @@ async function fetchCommits() {
         const tmp_hash = extractHash(commit.message);
 
 
-        commit.image = "/project/download/"+tmp_time + "_" + commit.hash + "_" +tmp_hash+"_s.png";
+        commit.image = "/project/download/"+tmp_time + "_" + commit.hash + "_" +tmp_hash+"_s.webp";
         const slide = document.createElement('img');
         slide.src = commit.image;
         slide.classList.add('slide')
