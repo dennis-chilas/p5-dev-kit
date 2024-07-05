@@ -43,4 +43,4 @@ WebSocket server is running on ws://localhost:8000
 
 The visual view is under the project url /history... in my case http://localhost:3007/history
 
-[![example](https://upload.dennis-chilas.de/p5devkit.jpg)](https://upload.dennis-chilas.de/p5devkit.mp4)
+[![example](https://upload.dennis-chilas.de/p5devkit-2.jpg)](https://upload.dennis-chilas.de/p5devkit.mp4)
