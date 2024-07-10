@@ -62,7 +62,7 @@ const setupServer = async () => {
             const log = await git.log();
             const commitHash = log.latest.hash;
 
-            const timeStamp = new Date().toISOString().replace(/[:.-]/g, '');
+            const timeStamp = getTimestamp();
             const fileName = `${timeStamp}_${commitHash}_${hash}.png`;
             const filePath = path.join(downloadFolder, fileName);
 
@@ -104,6 +104,17 @@ const setupServer = async () => {
     app.get('/history', (req, res) => {
         res.sendFile(path.resolve(__dirname, '..', 'history/index.html'));
     });
+
+    const getTimestamp = () => {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = String(now.getFullYear()).slice(2);
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        return `${year}${month}${day}-${hours}${minutes}${seconds}`;
+    };
 
     portfinder.getPortPromise().then((port) => {
         global.wsPort = port;
